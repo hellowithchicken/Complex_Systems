@@ -67,3 +67,16 @@ def get_network(grid, simplify = False):
           G.remove_node(node)
 
   nx.draw(G, pos)
+  return G
+
+
+get_average_degree(G):
+  """
+  Takes a graph G and returns average degree of the graph
+  """
+  degrees = G.degree()
+  no_of_nodes = len(G)
+  sum = 0
+  for node in degrees:
+    sum += node[1]
+  return sum/no_of_nodes
