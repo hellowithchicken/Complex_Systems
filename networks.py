@@ -1,21 +1,24 @@
+import networkx as nx
+
 def check_for_neighbours(row, col, grid, direction):
   """
   Looks in a specified direction if there is a neighbour
   """
   if direction == "up" and (row - 1 > -1):
-    return grid[row - 1, col] == 1
+    return grid[row - 1, col] > 0
   if direction == "down" and (row + 1 < len(grid)):
-    return grid[row + 1, col] == 1
+    return grid[row + 1, col] > 0
   if direction == "right" and (col + 1 < len(grid)):
-    return grid[row, col + 1] == 1
+    return grid[row, col + 1] > 0
   if direction == "left" and (col - 1 > -1):
-    return grid[row, col - 1] == 1
+    return grid[row, col - 1] > 0
   return False
 
 def get_network(grid, simplify = False):
   """
   Takes a grid of 1s and 0s and converts it into a network.
   Simply - removed nodes of degree 2.
+  GRID HAS TO BE SQUARE.
   """
   # initialise network
   G=nx.Graph()
