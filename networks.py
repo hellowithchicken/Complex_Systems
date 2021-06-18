@@ -70,7 +70,7 @@ def get_network(grid, simplify = False):
   return G
 
 
-get_average_degree(G):
+def get_average_degree(G):
   """
   Takes a graph G and returns average degree of the graph
   """
