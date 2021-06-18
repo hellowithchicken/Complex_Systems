@@ -2,7 +2,6 @@ import numpy as np
 import numba
 import time
 import matplotlib.pyplot as plt
-import tqdm
 
 
 @numba.njit
