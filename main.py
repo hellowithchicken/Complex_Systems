@@ -7,7 +7,7 @@ from dla_prob_model import dla_prob_model
 
 def main():
 
-    dla_prob_model()
+    #dla_prob_model()
 
     # TODO: implement monte carlo model
     N = 100      # lattice size
