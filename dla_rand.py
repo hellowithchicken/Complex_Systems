@@ -174,35 +174,24 @@ def get_fractal_dim(image_grid):
     # plt.imshow(image)
     # plt.show()
 
-    # finding all the non-zero pixels
-    pixels=[]
-    for i in range(image.shape[0]):
-        for j in range(image.shape[1]):
-            if image[i,j] == 0:
-                pixels.append((i,j))
-    
-    Lx=image.shape[1]
-    Ly=image.shape[0]
-    #print (Lx, Ly)
-    pixels=pl.array(pixels)
-    #print (pixels.shape)
-    
-    # computing the fractal dimension
-    #considering only scales in a logarithmic list
-    scales=np.logspace(0.01, 1, num=10, endpoint=False, base=2)
-    Ns=[]
-    # looping over several scales
-    for scale in scales:
-        #print ("======= Scale :",scale)
-        # computing the histogram
-        H, edges=np.histogramdd(pixels, bins=(np.arange(0,Lx,scale),np.arange(0,Ly,scale)))
-        Ns.append(np.sum(H>0))
-    
-    # linear fit, polynomial of degree 1
-    coeffs, cov =np.polyfit(np.log(scales), np.log(Ns), 1, cov=True)
-    print ("The fractal dimension is", -coeffs[0]) #the fractal dimension is the OPPOSITE of the fitting coefficient
-    #np.savetxt("scaling.txt", list(zip(scales,Ns)))
-    return -coeffs[0], np.sqrt(cov[0,0])
+
+def plot_grid(grid):
+    fig = plt.figure(figsize=(5,5))
+    ax = fig.add_subplot()
+    cax = ax.matshow(grid, cmap='afmhot')
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    plt.axis('off')
+    #plt.colorbar()
+    fig.subplots_adjust(bottom = 0)
+    fig.subplots_adjust(top = 1)
+    fig.subplots_adjust(right = 1)
+    fig.subplots_adjust(left = 0)
+
+
+
+
+
 
 
 if __name__ == '__main__':
@@ -240,7 +229,7 @@ if __name__ == '__main__':
         plt.savefig(f'test_{stickiness}.png')
         plt.close()
         
-        frac_dim, std = get_fractal_dim(f'test_{stickiness}')
+        #frac_dim, std = get_fractal_dim(f'test_{stickiness}')
         fractal_dimension_list.append(frac_dim)
         fractal_dimension_std_list.append(std)
 
