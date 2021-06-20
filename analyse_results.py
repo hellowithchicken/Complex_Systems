@@ -6,7 +6,9 @@ import pandas as pd
 import os
 import seaborn as sns
 
-directory = "results/changing_stickness/"
+#directory = "results/changing_stickness/"
+#directory = "results/changing_stickness_2/"
+directory = "results/changing_walkers/"
 
 # read the files, convert it to networks and get statistics
 
@@ -14,13 +16,14 @@ files = os.listdir(directory)
 df = pd.DataFrame()
 
 for file in files:
+    print(file)
     try:
         grid = np.load(directory + file, allow_pickle = True)
     except OSError:
         continue
     # get simulation number and stickness
     stickiness = float(file[0:file.find(",")])
-    simulation = (file[file.find(",")+1:file.find(".")])
+    simulation = (file[file.find(",")+1:file.find(".npy")])
     # convert grid to a network
     G = get_network(grid, simplify = True)
     average_degree = get_average_degree(G)
@@ -40,6 +43,6 @@ for file in files:
         })
     df = df.append(df_new)
     
-
+sns.lineplot(data = df, x = "stickiness", y = "average_degree")
     
     

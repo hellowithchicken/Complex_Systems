@@ -2,7 +2,7 @@ import networkx as nx
 
 def check_for_neighbours(row, col, grid, direction):
   """
-  Looks in a specified direction if there is a neighbour
+  Looks in a specified direction for a neighbour
   """
   if direction == "up" and (row - 1 > -1):
     return grid[row - 1, col] > 0
@@ -17,8 +17,8 @@ def check_for_neighbours(row, col, grid, direction):
 def get_network(grid, simplify = True, plot = False):
   """
   Takes a grid of 1s and 0s and converts it into a network.
-  Simply - removed nodes of degree 2.
-  GRID HAS TO BE SQUARE.
+  Simplify - removed nodes of degree 2.
+  GRID HAS TO BE A SQUARE.
   """
   # initialise network
   G=nx.Graph()
@@ -59,6 +59,8 @@ def get_network(grid, simplify = True, plot = False):
   # add links to the graph
   G.add_edges_from(links)
 
+
+  # remove nodes of degree 2
   if simplify:
     for node in list(G.nodes()):
       if G.degree(node) == 2:
@@ -66,6 +68,7 @@ def get_network(grid, simplify = True, plot = False):
           G.add_edge(edges[0][1], edges[1][1])
           G.remove_node(node)
 
+  # produce a plot
   if plot:
       nx.draw(G, pos)
       
