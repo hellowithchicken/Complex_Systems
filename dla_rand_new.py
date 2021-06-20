@@ -204,6 +204,19 @@ def get_fractal_dim(image_grid):
     #np.savetxt("scaling.txt", list(zip(scales,Ns)))
     return -coeffs[0], np.sqrt(cov[0,0])
 
+def plot_grid(grid):
+    fig = plt.figure(figsize=(5,5))
+    ax = fig.add_subplot()
+    cax = ax.matshow(grid, cmap='afmhot')
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    plt.axis('off')
+    #plt.colorbar()
+    fig.subplots_adjust(bottom = 0)
+    fig.subplots_adjust(top = 1)
+    fig.subplots_adjust(right = 1)
+    fig.subplots_adjust(left = 0)
+
 
 if __name__ == '__main__':
 
