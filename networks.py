@@ -14,7 +14,7 @@ def check_for_neighbours(row, col, grid, direction):
     return grid[row, col - 1] > 0
   return False
 
-def get_network(grid, simplify = False):
+def get_network(grid, simplify = True, plot = False):
   """
   Takes a grid of 1s and 0s and converts it into a network.
   Simply - removed nodes of degree 2.
@@ -66,7 +66,9 @@ def get_network(grid, simplify = False):
           G.add_edge(edges[0][1], edges[1][1])
           G.remove_node(node)
 
-  nx.draw(G, pos)
+  if plot:
+      nx.draw(G, pos)
+      
   return G
 
 
