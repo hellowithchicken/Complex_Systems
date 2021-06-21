@@ -1,4 +1,4 @@
-from networks import get_network, get_average_degree
+from networks import get_network, get_average_degree, get_entropy, get_dead_ends, get_4_way
 from dla_rand import DLA_init, plot_grid
 import networkx as nx
 import numpy as np
@@ -6,8 +6,7 @@ import pandas as pd
 import os
 import seaborn as sns
 
-#directory = "results/changing_stickness/"
-#directory = "results/changing_stickness_2/"
+#directory = "results/changing_stickness_400_walkers/"
 directory = "results/changing_walkers/"
 
 # read the files, convert it to networks and get statistics
@@ -31,6 +30,9 @@ for file in files:
     transitivity = nx.transitivity(G)
     diameter = nx.diameter(G)
     radius = nx.radius(G)
+    entropy = get_entropy(G)
+    dead_ends = get_dead_ends(G)
+    ways_4 = get_4_way(G)
     # create a df dictionary
     df_new = pd.DataFrame({
         "stickiness" : [stickiness],
@@ -39,10 +41,13 @@ for file in files:
         "average_clustering" : [average_clustering],
         "transitivity" : [transitivity],
         "diameter": [diameter],
-        "radius" : [radius]
+        "radius" : [radius],
+        "entropy" : [entropy],
+        "dead_ends": [dead_ends],
+        "ways_4" : [ways_4]
         })
     df = df.append(df_new)
     
 sns.lineplot(data = df, x = "stickiness", y = "average_degree")
     
-    
+df.to_csv("results.csv")  

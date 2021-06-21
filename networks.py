@@ -96,6 +96,15 @@ def get_city_network(city, simplify = True):
           G.remove_node(node)
   return G
 
+def get_degree_list(G):
+  """
+  Takes graph G and returns list of node degress
+  """
+  degrees = G.degree()
+  degree_list = []
+  for node in degrees:
+    degree_list.append(node[1])
+  return degree_list
 
 def get_average_degree(G):
   """
@@ -167,5 +176,32 @@ def get_entropy(G, osmnx = False):
       if fraction > 0:
           entropy += fraction * np.log(fraction)
   return -1 * entropy
+
+def get_network_stats(G):
+  """
+  Takes graph G and returns a dataframe with selected network statistics
+  """
+  average_degree = get_average_degree(G)
+  average_clustering = nx.average_clustering(G)
+  transitivity = nx.transitivity(G)
+  diameter = nx.diameter(G)
+  radius = nx.radius(G)
+  entropy = get_entropy(G)
+  dead_ends = get_dead_ends(G)
+  ways_4 = get_4_way(G)
+  # create a df dictionary
+  df = pd.DataFrame({
+      "stickiness" : [stickiness],
+      "simulation" : [simulation],
+      "average_degree" : [average_degree],
+      "average_clustering" : [average_clustering],
+      "transitivity" : [transitivity],
+      "diameter": [diameter],
+      "radius" : [radius],
+      "entropy" : [entropy],
+      "dead_ends": [dead_ends],
+      "ways_4" : [ways_4]
+      })
+  return df
 
 

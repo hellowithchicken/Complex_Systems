@@ -1,6 +1,7 @@
 from dla_rand_new import DLA_init
 import numpy as np
 
+# change stickiness
 
 simulations = 50
 
