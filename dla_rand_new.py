@@ -205,9 +205,12 @@ def get_fractal_dim(image_grid):
     return -coeffs[0], np.sqrt(cov[0,0])
 
 def plot_grid(grid):
+    grid_reduced = grid[~np.all(grid == 0, axis=1)]
+    grid_reduced = grid_reduced[:, ~np.all(grid == 0, axis=0)]
+    Lx, Ly = grid_reduced.shape[1], grid_reduced.shape[0]
     fig = plt.figure(figsize=(5,5))
     ax = fig.add_subplot()
-    cax = ax.matshow(grid, cmap='afmhot')
+    cax = ax.matshow(grid_reduced, cmap='binary')
     ax.set_xlabel('x')
     ax.set_ylabel('y')
     plt.axis('off')
@@ -216,6 +219,9 @@ def plot_grid(grid):
     fig.subplots_adjust(top = 1)
     fig.subplots_adjust(right = 1)
     fig.subplots_adjust(left = 0)
+    #plt.imshow(grid)
+    #plt.savefig(f'test_{stickiness}.png')
+    plt.show()
 
 
 if __name__ == '__main__':
