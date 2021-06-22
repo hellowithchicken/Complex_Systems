@@ -2,6 +2,7 @@ import networkx as nx
 import osmnx as ox
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
 ### CHECK betweenness_centrality LATER
 
@@ -106,6 +107,12 @@ def get_city_network(city, simplify = True, get_multi = False):
     return G, G0
   return G
 
+def get_distance(x1, x2, y1, y2):
+  """
+  Takes two coordinates and finds the euclidean distance between them
+  """  
+  return ((x1 - x2)**2 + (y1 - y2)**2)**0.5
+
 def get_degree_list(G):
   """
   Takes graph G and returns list of node degress
@@ -127,6 +134,23 @@ def get_average_degree(G):
     sum += node[1]
   return sum/no_of_nodes
 
+
+def get_average_distance(G):
+  """
+  Takes a graph G and returns the average distance between nodes in the network
+  based on Euclidean distance
+  """
+  # get coordinates
+  coordinates=nx.get_node_attributes(G,'pos')
+  distances = []
+  for e in G.edges:
+    node_1= e[0]
+    node_2= e[1]
+    x_1, y_1 = coordinates[node_1]
+    x_2, y_2 = coordinates[node_2]
+    distance = get_distance(x_1, x_2, y_1, y_2)
+    distances.append(distance)
+  return sum(distances)/len(G.edges)
 
 def get_dead_ends(G):
   """
@@ -195,24 +219,38 @@ def get_network_stats(G, osmnx = False):
   average_degree = get_average_degree(G)
   average_clustering = nx.average_clustering(G)
   transitivity = nx.transitivity(G)
-  #diameter = nx.diameter(G)
-  #radius = nx.radius(G)
+  if osmnx == False:
+    diameter = nx.diameter(G)
+    radius = nx.radius(G)
   entropy = get_entropy(G, osmnx)
   dead_ends = get_dead_ends(G)
   ways_4 = get_4_way(G)
+  average_distance = get_average_distance(G)
   # create a df dictionary
-  df = pd.DataFrame({
-      "average_degree" : [average_degree],
-      "average_clustering" : [average_clustering],
-      "transitivity" : [transitivity],
-      #"diameter": [diameter],
-      #"radius" : [radius],
-      "entropy" : [entropy],
-      "dead_ends": [dead_ends],
-      "ways_4" : [ways_4],
-      "nodes": [len(G)],
-      #"nodes_diameter_ratio": [len(G)/diameter]
-      })
+  if osmnx == False:
+    df = pd.DataFrame({
+        "average_degree" : [average_degree],
+        "average_clustering" : [average_clustering],
+        "transitivity" : [transitivity],
+        "diameter": [diameter],
+        "radius" : [radius],
+        "entropy" : [entropy],
+        "dead_ends": [dead_ends],
+        "ways_4" : [ways_4],
+        "nodes": [len(G)],
+        "nodes_diameter_ratio": [len(G)/diameter],
+        "average_distance" : [average_distance]
+        })
+  else:
+    df = pd.DataFrame({
+        "average_degree" : [average_degree],
+        "average_clustering" : [average_clustering],
+        "transitivity" : [transitivity],
+        "entropy" : [entropy],
+        "dead_ends": [dead_ends],
+        "ways_4" : [ways_4],
+        "nodes": [len(G)],
+        })
   return df
 
 def plot_city_network(G):

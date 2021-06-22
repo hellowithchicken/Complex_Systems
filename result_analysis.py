@@ -1,4 +1,4 @@
-from networks import get_network, get_average_degree, get_entropy, get_dead_ends, get_4_way
+from networks import get_network, get_average_degree, get_entropy, get_dead_ends, get_4_way, get_average_distance
 from dla_rand import DLA_init, plot_grid
 import networkx as nx
 import numpy as np
@@ -46,10 +46,11 @@ for file in files:
         "dead_ends": [dead_ends],
         "ways_4" : [ways_4],
         "nodes": [len(G)],
-        "nodes_diameter_ratio": [len(G)/diameter]
+        "nodes_diameter_ratio": [len(G)/diameter],
+        "average_dsitance": get_average_distance(G)
         })
     df = df.append(df_new)
     
-sns.lineplot(data = df, x = "stickiness", y = "nodes_diameter_ratio")
+sns.lineplot(data = df, x = "stickiness", y = "average_dsitance")
     
 #df.to_csv("results.csv")  
