@@ -1,6 +1,7 @@
 import networkx as nx
 import osmnx as ox
 import numpy as np
+import pandas as pd
 
 ### CHECK betweenness_centrality LATER
 
@@ -43,7 +44,7 @@ def get_network(grid, simplify = True, plot = False):
       # add node to the list
       nodes.append(node_number)
       # get coordinates of the node
-      coordinates  = (row, col)
+      coordinates  = (col, -1 * row)
       pos[node_number] = coordinates
       # check for neighbors and if the neighbor exists add a link
       # check up
@@ -83,17 +84,26 @@ def get_network(grid, simplify = True, plot = False):
       
   return G
 
-def get_city_network(city, simplify = True):
+def get_city_network(city, simplify = True, get_multi = False):
   """
-  Returns a (simplified) city network from OSMnx package.
-  city - string name of the city
+  Returns a city network from OSMnx package.
+  The function downloads the city network and returns the giant component
+  to make sure that the network is fully connected.
+  simplify - returns a graph that only has junctions and dead-end.
+  city - string name of the city e.g. "Amsterdam, the Netherlands",
+  get_multi - set to True if you will be using the graph for plotting with plot_city_network
+  , this way you get two graphs - G: suitable for statistics, G0 - suitable for plotting
   """
-  if simplify:
-    for node in list(G.nodes()):
-      if G.degree(node) == 2:
-          edges = list(G.edges(node))
-          G.add_edge(edges[0][1], edges[1][1])
-          G.remove_node(node)
+  G = ox.graph_from_place(city, network_type="drive", simplify = simplify)
+  G = ox.bearing.add_edge_bearings(G) # add bearings - needed for entropy calculations
+  # convert to undirected
+  G = G.to_undirected()
+  # get the giant component
+  Gcc = sorted(nx.connected_components(G), key=len, reverse=True)
+  G0 = G.subgraph(Gcc[0])
+  G = nx.Graph(G)
+  if get_multi:
+    return G, G0
   return G
 
 def get_degree_list(G):
@@ -129,7 +139,6 @@ def get_dead_ends(G):
     if node[1] == 1:
       sum += 1
   return sum/no_of_nodes
-
 
 def get_4_way(G):
   """
@@ -177,31 +186,63 @@ def get_entropy(G, osmnx = False):
           entropy += fraction * np.log(fraction)
   return -1 * entropy
 
-def get_network_stats(G):
+def get_network_stats(G, osmnx = False):
   """
   Takes graph G and returns a dataframe with selected network statistics
+  Set osmnx = True if the graph was obtained via osmnx as networks from osmnx package 
+  have easy entropy calculation option
   """
   average_degree = get_average_degree(G)
   average_clustering = nx.average_clustering(G)
   transitivity = nx.transitivity(G)
-  diameter = nx.diameter(G)
-  radius = nx.radius(G)
-  entropy = get_entropy(G)
+  #diameter = nx.diameter(G)
+  #radius = nx.radius(G)
+  entropy = get_entropy(G, osmnx)
   dead_ends = get_dead_ends(G)
   ways_4 = get_4_way(G)
   # create a df dictionary
   df = pd.DataFrame({
-      "stickiness" : [stickiness],
-      "simulation" : [simulation],
       "average_degree" : [average_degree],
       "average_clustering" : [average_clustering],
       "transitivity" : [transitivity],
-      "diameter": [diameter],
-      "radius" : [radius],
+      #"diameter": [diameter],
+      #"radius" : [radius],
       "entropy" : [entropy],
       "dead_ends": [dead_ends],
-      "ways_4" : [ways_4]
+      "ways_4" : [ways_4],
+      "nodes": [len(G)],
+      #"nodes_diameter_ratio": [len(G)/diameter]
       })
   return df
+
+def plot_city_network(G):
+  """
+  Takes a city graph G and plots it.
+  G must be of networkx.MultiDiGraph - so you must set get_multi = True
+  in get_city_network function to be able to plot.
+  """
+  ox.plot_graph(
+    G,
+    show=False,
+    close=False,
+    bgcolor="#333333",
+    edge_color="b",
+    edge_linewidth=0.3,
+    node_size=1,
+  )
+
+def plot_grid_network(G, fig_size = 10, node_size = 25, node_color = "#008494"):
+    """
+    Takes network G (generated with DLA) and plots it on a square plot.
+    """
+    fig, ax = plt.subplots(figsize=(fig_size, fig_size))
+    ax.axis('off')
+
+    nx.draw_networkx(G, 
+                     pos = nx.get_node_attributes(G,'pos'),
+                     with_labels=False,
+                     node_color = node_color,
+                     node_size = node_size,
+                     ax = ax)
 
 

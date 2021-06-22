@@ -6,8 +6,8 @@ import pandas as pd
 import os
 import seaborn as sns
 
-#directory = "results/changing_stickness_400_walkers/"
-directory = "results/changing_walkers/"
+directory = "results/changing_stickness_400_walkers/"
+#directory = "results/changing_walkers/"
 
 # read the files, convert it to networks and get statistics
 
@@ -29,8 +29,8 @@ for file in files:
     average_clustering = nx.average_clustering(G)
     transitivity = nx.transitivity(G)
     diameter = nx.diameter(G)
-    radius = nx.radius(G)
-    entropy = get_entropy(G)
+    #radius = nx.radius(G)
+    entropy = get_entropy(G, osmnx = False)
     dead_ends = get_dead_ends(G)
     ways_4 = get_4_way(G)
     # create a df dictionary
@@ -41,13 +41,15 @@ for file in files:
         "average_clustering" : [average_clustering],
         "transitivity" : [transitivity],
         "diameter": [diameter],
-        "radius" : [radius],
+        #"radius" : [radius],
         "entropy" : [entropy],
         "dead_ends": [dead_ends],
-        "ways_4" : [ways_4]
+        "ways_4" : [ways_4],
+        "nodes": [len(G)],
+        "nodes_diameter_ratio": [len(G)/diameter]
         })
     df = df.append(df_new)
     
-sns.lineplot(data = df, x = "stickiness", y = "average_degree")
+sns.lineplot(data = df, x = "stickiness", y = "nodes_diameter_ratio")
     
-df.to_csv("results.csv")  
+#df.to_csv("results.csv")  
