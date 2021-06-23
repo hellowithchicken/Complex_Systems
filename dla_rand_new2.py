@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 import concurrent.futures
 import pylab as pl
-from scipy import signal
 
 def initialize_grid(size):
     """makes grid of chosen size"""
@@ -39,12 +38,12 @@ def check_adhere(x_pos, y_pos, grid):
     if x_pos - 1 >= 0:
         if grid[x_pos-1][y_pos] > 0:
             return True
-
+    
     return False
 
 def move(x_pos, y_pos, grid, time, n_walkers, radius):
     """moves the random walker, avoiding edges and the structure"""
-
+    
     while True:
         x_new, y_new = x_pos, y_pos
         movement = np.random.choice([0,1,2,3])
@@ -54,13 +53,13 @@ def move(x_pos, y_pos, grid, time, n_walkers, radius):
 
         elif movement == 1:
             x_new = x_pos - 1
-
+        
         elif movement == 2:
             y_new = y_pos + 1
-
+        
         else:
             y_new = y_pos - 1
-
+        
         # check if the new move doesn't hit a boundary or structure
         if (x_new < 0) or (x_new > len(grid) - 1):
             continue
@@ -104,7 +103,7 @@ def walker(grid, stick_prob, time, n_walkers, curr_farthest_dist):
     # update the farthest distance from center
     dist_from_center = np.sqrt((x_pos-0.5*len(grid))**2 + (y_pos-0.5*len(grid))**2)
     if dist_from_center > curr_farthest_dist:
-        farthest_distance = dist_from_center
+        farthest_distance = dist_from_center 
 
     else:
         farthest_distance = curr_farthest_dist
@@ -121,7 +120,7 @@ def DLA_init(gridsize, n_walkers, stick_prob):
     #     result = [executor.submit(walker, grid, stick_prob) for _ in range(n_walkers)]
     #     for i in concurrent.futures.as_completed(result):
     #         grid = i.result()
-
+    
     # set a maximum distance for spawning which gets updates with every walker
     farthest_distance = 5
     for i in tqdm(range(n_walkers)):
@@ -192,7 +191,7 @@ def fractal_dim(grid, Lx, Ly):
         for gridpoint in np.hstack(grid[x_start:x_end, y_start:y_end]):
             if gridpoint > 0:
                 point_counter += 1
-
+        
         square_counts.append(point_counter)
 
     log_x = [np.log(x*Lx) for x in lengths]
@@ -211,7 +210,7 @@ def get_fractal_dim(image_grid):
         r, g, b = rgb[:,:,0], rgb[:,:,1], rgb[:,:,2]
         gray = 0.2989 * r + 0.5870 * g + 0.1140 * b
         return gray
-
+ 
     image=rgb2gray(pl.imread(f"{image_grid}.png"))
     plt.imshow(image)
     plt.show()
@@ -224,13 +223,13 @@ def get_fractal_dim(image_grid):
             if image[i,j] == 0:
             # if image[i,j] > 0:
                 pixels.append((i,j))
-
+    
     Lx=image.shape[1]
     Ly=image.shape[0]
     #print (Lx, Ly)
     pixels=pl.array(pixels)
     #print (pixels.shape)
-
+    
     # computing the fractal dimension
     #considering only scales in a logarithmic list
     scales=np.logspace(0.01, 9, num=10, endpoint=False, base=2)
@@ -241,31 +240,12 @@ def get_fractal_dim(image_grid):
         # computing the histogram
         H, edges=np.histogramdd(pixels, bins=(np.arange(0,Lx,scale),np.arange(0,Ly,scale)))
         Ns.append(np.sum(H>0))
-
+    
     # linear fit, polynomial of degree 1
     coeffs, cov =np.polyfit(np.log(scales), np.log(Ns), 1, cov=True)
     print ("The fractal dimension is", -coeffs[0]) #the fractal dimension is the OPPOSITE of the fitting coefficient
     #np.savetxt("scaling.txt", list(zip(scales,Ns)))
     return -coeffs[0], np.sqrt(cov[0,0])
-
-def plot_grid(grid):
-    grid_reduced = grid[~np.all(grid == 0, axis=1)]
-    grid_reduced = grid_reduced[:, ~np.all(grid == 0, axis=0)]
-    Lx, Ly = grid_reduced.shape[1], grid_reduced.shape[0]
-    fig = plt.figure(figsize=(5,5))
-    ax = fig.add_subplot()
-    cax = ax.matshow(grid_reduced, cmap='binary')
-    ax.set_xlabel('x')
-    ax.set_ylabel('y')
-    plt.axis('off')
-    #plt.colorbar()
-    fig.subplots_adjust(bottom = 0)
-    fig.subplots_adjust(top = 1)
-    fig.subplots_adjust(right = 1)
-    fig.subplots_adjust(left = 0)
-    #plt.imshow(grid)
-    #plt.savefig(f'test_{stickiness}.png')
-    plt.show()
 
 
 if __name__ == '__main__':
