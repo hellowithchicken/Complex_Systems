@@ -150,9 +150,9 @@ def stickiness_scaler(time, scaling, n_walkers):
         return 0.5*np.sin(cycles*((time+1875)*2*np.pi)/n_walkers)+0.501
 
     if scaling == 'step_function':
-        periods = 5
+        periods = 7
         #periods_time = [(n_walkers/periods)*i for i in range(periods+1)]
-        periods_time = [0] + list(np.logspace(0.8, 1, num=periods, base=n_walkers))
+        periods_time = [0] + list(np.logspace(0.6, 1, num=periods, base=n_walkers))
 
         # stickiness switch
         stickiness_switch=1
@@ -262,7 +262,7 @@ if __name__ == '__main__':
 
         # for i in range(5):
         grid = DLA_init(500, 10000, stickiness)
-        np.save('10k_2periods', grid)
+        np.save('10k_3periods', grid)
         grid_reduced = grid[~np.all(grid == 0, axis=1)]
         grid_reduced = grid_reduced[:, ~np.all(grid == 0, axis=0)]
         #grid_reduced = grid
@@ -281,7 +281,7 @@ if __name__ == '__main__':
         fig.subplots_adjust(left = 0)
         #plt.imshow(grid)
         #plt.savefig(f'exponential_{stickiness}_colored.png', dpi=1000)
-        plt.savefig(f'10k_2periods.png', dpi=1000)
+        plt.savefig(f'10k_3periods.png', dpi=1000)
         plt.close()
         
     #     frac_dim, std = get_fractal_dim(f'test_{stickiness}')
