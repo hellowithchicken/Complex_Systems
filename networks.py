@@ -107,6 +107,29 @@ def get_city_network(city, simplify = True, get_multi = False):
     return G, G0
   return G
 
+def get_fractal_from_network(G, bins = 150, threshold = 0):
+    """
+    Takes a graph generated with get_city_network and return a binary
+    2d grid representing the fractal of the city.
+    bins - amount of cells in the grid (bins x bins),
+    threshold - number of nodes that should fall into a cell in order 
+    for the cell to have a value of 1
+    """
+    # get the list of node ids
+    node_ids = list(G.nodes())
+    list_ys = []
+    list_xs = []
+    # get coordinates of each node
+    for node_id in node_ids:
+        y = G.nodes[node_id]["y"]
+        x = G.nodes[node_id]["x"]
+        list_ys.append(y)
+        list_xs.append(x)
+    H, xedges, yedges = np.histogram2d(list_xs, list_ys, bins = bins)
+    H = H.T
+    H = H > threshold
+    return H.astype(int)
+
 def get_distance(x1, x2, y1, y2):
   """
   Takes two coordinates and finds the euclidean distance between them
@@ -219,27 +242,27 @@ def get_network_stats(G, osmnx = False):
   average_degree = get_average_degree(G)
   average_clustering = nx.average_clustering(G)
   transitivity = nx.transitivity(G)
-  if osmnx == False:
-    diameter = nx.diameter(G)
-    radius = nx.radius(G)
+  #if osmnx == False:
+    #diameter = nx.diameter(G)
+    #radius = nx.radius(G)
+    #average_distance = get_average_distance(G)
   entropy = get_entropy(G, osmnx)
   dead_ends = get_dead_ends(G)
   ways_4 = get_4_way(G)
-  average_distance = get_average_distance(G)
   # create a df dictionary
   if osmnx == False:
     df = pd.DataFrame({
         "average_degree" : [average_degree],
         "average_clustering" : [average_clustering],
         "transitivity" : [transitivity],
-        "diameter": [diameter],
-        "radius" : [radius],
+        #"diameter": [diameter],
+        #"radius" : [radius],
         "entropy" : [entropy],
         "dead_ends": [dead_ends],
         "ways_4" : [ways_4],
         "nodes": [len(G)],
-        "nodes_diameter_ratio": [len(G)/diameter],
-        "average_distance" : [average_distance]
+        #"nodes_diameter_ratio": [len(G)/diameter],
+        #"average_distance" : [average_distance]
         })
   else:
     df = pd.DataFrame({
