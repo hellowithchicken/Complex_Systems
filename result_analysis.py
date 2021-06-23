@@ -8,6 +8,7 @@ import seaborn as sns
 
 directory = "results/changing_stickness_400_walkers/"
 #directory = "results/changing_walkers/"
+#directory = "results/for_city_comprison/"
 
 # read the files, convert it to networks and get statistics
 
@@ -47,10 +48,19 @@ for file in files:
         "ways_4" : [ways_4],
         "nodes": [len(G)],
         "nodes_diameter_ratio": [len(G)/diameter],
-        "average_dsitance": get_average_distance(G)
+        "average_distance": get_average_distance(G)
         })
     df = df.append(df_new)
     
-sns.lineplot(data = df, x = "stickiness", y = "average_dsitance")
+#sns.lineplot(data = df, x = "stickiness", y = "average_distance")
     
-#df.to_csv("results.csv")  
+df.to_csv("results.csv")  
+
+means = df.groupby("stickiness").mean().reset_index()
+
+selected_columns = ['stickiness', 'average_degree', 'average_clustering', 'transitivity',
+                    'entropy', 'dead_ends', 'ways_4']
+
+trimmed_means = means[selected_columns]
+
+trimmed_means.to_csv("mean_results.csv")

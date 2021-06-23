@@ -9,6 +9,7 @@ city_list = ["Bangkok, Thailand", "Manila, the Philippines", "Ulaanbaatar, Mongo
              "Lagos, Nigeria", "Kampala, Uganda", 
              "Riyadh, Saudi Arabia", "Sana'a, Yemen"]
 
+
 df = pd.DataFrame()
 
 for city in city_list:
@@ -21,3 +22,5 @@ for city in city_list:
 df["city"] = city_list
 
 df.to_csv("city_results.csv")
+
+
