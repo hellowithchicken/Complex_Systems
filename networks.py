@@ -222,10 +222,10 @@ def get_network_stats(G, osmnx = False):
   if osmnx == False:
     diameter = nx.diameter(G)
     radius = nx.radius(G)
+    average_distance = get_average_distance(G)
   entropy = get_entropy(G, osmnx)
   dead_ends = get_dead_ends(G)
   ways_4 = get_4_way(G)
-  average_distance = get_average_distance(G)
   # create a df dictionary
   if osmnx == False:
     df = pd.DataFrame({
