@@ -7,7 +7,7 @@ from celluloid import Camera
 import sys
 
 
-grid = np.load('10k_3periods.npy')
+grid = np.load('10k_1periods2.npy')
 print(grid.shape[0])
 
 pixels = []
@@ -58,4 +58,4 @@ for i in range(len(ordered_pixels)):
         camera.snap()
 
 animation = camera.animate()
-animation.save('animation10k3.gif', writer='PillowWriter', fps=10)    
+animation.save('animation10k1per.gif', writer='PillowWriter', fps=10)    
