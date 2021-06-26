@@ -19,11 +19,10 @@ def pic2array(image_grid):
     for i in range(image.shape[0]):
         for j in range(image.shape[1]):
             if image[i,j] > 0 and (image[i,j] < 1):
-            # if image[i,j] > 0:
                 grid[i,j] = 1
                 
     print(grid.shape[0], grid.shape[1])
     plt.imshow(grid, cmap='binary')
     plt.show()
 
-pic2array('test_0.1')
+pic2array('test')
