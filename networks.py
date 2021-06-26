@@ -286,8 +286,9 @@ def plot_city_network(G):
     G,
     show=False,
     close=False,
-    bgcolor="#333333",
-    edge_color="b",
+    bgcolor='#FFFFFF',
+    edge_color="#000000",
+    node_color = "#008494",
     edge_linewidth=0.3,
     node_size=1,
   )
