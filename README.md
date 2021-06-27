@@ -11,6 +11,10 @@ To install all necessary packages, run:
   pip3 install requirements.txt
 ```
 
+## Usage examples
+
+Notebook with usage examples of the code can be found in `examples.ipynb` 
+
 ## Modules
 - `dla_model_final.py` - functions for generating DLA arrays (including dynamic stickiness), statistic visualisations and calculating fractal dimension
 - `networks.py` - functions for generating networks from DLA, retrieving real-life networks, converting city networks into fractals, visualising and performing analysis
@@ -33,6 +37,3 @@ Results generated with experiments can be found in the `results` folder:
 - `real_cities` - csv files with network statistics for selected real-world cities generated with `analyse_cities.py`
 - `periods` - a number of DLA .npy arrays generated with periodic stickiness.
 
-## Usage examples
-
-Notebook with usage examples of the code can be found in `examples.ipynb` 
