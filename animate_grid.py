@@ -3,17 +3,21 @@ import numpy as np
 from copy import deepcopy
 from celluloid import Camera
 
-def create_gif(gif_array, walkers_per_frame=10, fps=10, colored=False):
+def create_gif(gif_array = None, grid = None, walkers_per_frame=10, fps=10, colored=False, from_file = False, file_name = "animation"):
     """
-    Loads a saved numpy array and returns a GIF, also shows the animation during creation, but this can be closed
+    Either loads a saved numpy array or takes a numpy grid and returns a GIF, also shows the animation during creation, but this can be closed
     gif_array: .npy array to be loaded in, leave out the .npy extension, this cannot be a binary array
+    grid: numpy array to be visualised, leave as None if loading the grid from a .npy file
     walkers_per_frame: amount of walkers in the grid to be attached per frame
     fps: frames per second for GIF
     colored: True for color, False for black and white
+    Saves the resulting gif to results/gifs/file_name.gif
+    from_file: set to True if you are using a save numpy .npy file
+    file_name: file name to save it as 
     """
-
-    print(f'Creating GIF of {gif_array}. You may cancel the pop-up animation.')
-    grid = np.load(f'{gif_array}.npy')
+    if from_file:
+        print(f'Creating GIF of {gif_array}.')
+        grid = np.load(f'{gif_array}.npy')
 
     pixels = []
     c_values = []
@@ -63,11 +67,11 @@ def create_gif(gif_array, walkers_per_frame=10, fps=10, colored=False):
             data_set.append(deepcopy(array))
             image = ax.imshow(array, cmap='afmhot', animated=True)
             images.append([image])
-            plt.pause(0.01)
+            #plt.pause(0.01)
             camera.snap()
 
     animation = camera.animate()
-    animation.save(f'{gif_array}.gif', writer='PillowWriter', fps=fps)   
+    animation.save("figures/gifs/" + file_name + ".gif", writer='PillowWriter', fps=fps)   
     print('Done!') 
 
 if __name__ == '__main__':

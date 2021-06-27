@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 import pylab as pl
+import os
 
 def initialize_grid(size):
     """makes grid of chosen size"""
@@ -109,12 +110,13 @@ def walker(grid, stick_prob, time, n_walkers, curr_farthest_dist, binary=False):
     return farthest_distance
 
 
-def DLA_init(gridsize, n_walkers, stick_prob, binary=False, dynamic_scaler=False):
+def DLA_init(gridsize, n_walkers, stick_prob = 1, binary=False, dynamic_scaler=False):
     """
     runs the DLA sim with chosen gridsize, amount of walkers and sticking probability
     if dynamic stickiness is prefered, set dynamic_scaler to 'sin', 
     'exponential', 'linear', 'dampened_sin', 'waves', or 'step_function'
-    if not, set it to False. 
+    if not, set it to False. If dynamic_scaler is used, stick_prob is neglected.
+
 
     Caution: the dynamic stickiness doesn't automatically adjust to different grid sizes and walkers,
     so the stickiness_scaler function must be adapted manually.
@@ -240,6 +242,39 @@ def plot_grid(grid):
     #plt.imshow(grid)
     #plt.savefig(f'test_{stickiness}.png')
     plt.show()
+
+def get_fractal_dla(grid):
+    """
+    takes a DLA grid and applies box counting to calculate the fractal dimension
+    and standard deviation
+    """
+    # cut off the edges of the grid
+    grid_reduced = grid[~np.all(grid == 0, axis=1)]
+    grid_reduced = grid_reduced[:, ~np.all(grid_reduced == 0, axis=0)]
+
+    # make a figure to save
+    fig = plt.figure()
+    ax = fig.add_subplot()
+
+    # choose the colormap wanted, suggestions are 'binary' and 'afmhot', for fractal analysis, should be 'binary'
+    cax = ax.matshow(grid_reduced, cmap='binary')
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    plt.axis('off')
+   
+    fig.subplots_adjust(bottom = 0)
+    fig.subplots_adjust(top = 1)
+    fig.subplots_adjust(right = 1)
+    fig.subplots_adjust(left = 0)
+    
+    # save the figure for fractal analysis, high dpi is advised, more accurate but time-consuming!
+    plt.savefig('interim_fractal.png', dpi=1000)
+    plt.close()
+
+    frac_dim, std = get_fractal_dim('interim_fractal')
+    print(f'Found fractal dimension of {frac_dim} with standard deviation {std}.')
+    os.remove('interim_fractal.png') 
+    return frac_dim, std
 
 
 if __name__ == '__main__':
