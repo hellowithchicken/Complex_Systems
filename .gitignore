@@ -17,3 +17,6 @@ results/.DS_Store
 97apZO
 results/.DS_Store
 results/.DS_Store
+.ipynb_checkpoints/examples-checkpoint.ipynb
+.ipynb_checkpoints/ignas-playground-checkpoint.ipynb
+__pycache__/dla_model_final.cpython-38.pyc
