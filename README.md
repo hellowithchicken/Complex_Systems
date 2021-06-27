@@ -14,7 +14,7 @@ To install all necessary packages, run:
 ## Modules
 - `dla_model_final.py` - functions for generating DLA arrays (including dynamic stickiness) and calculating fractal dimension
 - `networks.py` - functions for generating networks from DLA, retrieving real-life networks, converting city networks into fractals and performing analysis
-- `animate_grid.py` - function for generating animated gifs from DLA numpy arrays
+- `animate_grid.py` - a function for generating animated gifs from DLA numpy arrays
 - `fractal_city.py` - code for retrieving fractals from real-life city networks.
 
 ### Other
