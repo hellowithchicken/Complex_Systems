@@ -1,4 +1,6 @@
 # Generating urban-like networks with DLA
+### Ignas Krikštaponis, Xiang Li, Sebastiaan Kruize, Youri Moll
+
 
 ![](figures/process.png)
 
