@@ -1,3 +1,5 @@
+# Generating urban-like networks with DLA
+
 ## Files
 - `main.py` - entry point for program to execute all algorithms
 - `dla_prob_model.py` - exercise 2.1. DLA using probability growth model
