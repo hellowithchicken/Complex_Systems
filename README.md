@@ -27,7 +27,7 @@ Notebook with usage examples of the code can be found in `examples.ipynb`
 - `result_analysis.py` - code used for reading .npy DLA arrays in  `results` folder and extracting network statistics from them
 - `analyse_cities.py` - code used for gathering network statistics for selected real-world cities.
 
-### Results
+## Results
 
 Results generated with experiments can be found in the `results` folder:
 
