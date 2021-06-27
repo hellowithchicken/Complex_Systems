@@ -12,8 +12,8 @@ To install all necessary packages, run:
 ```
 
 ## Modules
-- `dla_model_final.py` - functions for generating DLA arrays (including dynamic stickiness) and calculating fractal dimension
-- `networks.py` - functions for generating networks from DLA, retrieving real-life networks, converting city networks into fractals and performing analysis
+- `dla_model_final.py` - functions for generating DLA arrays (including dynamic stickiness), statistic visualisations and calculating fractal dimension
+- `networks.py` - functions for generating networks from DLA, retrieving real-life networks, converting city networks into fractals, visualising and performing analysis
 - `animate_grid.py` - a function for generating animated gifs from DLA numpy arrays
 - `fractal_city.py` - code for retrieving fractals from real-life city networks.
 
@@ -21,7 +21,7 @@ To install all necessary packages, run:
 
 - `experiments.py` - code used for running experiments with changing stickiness and number of walkers; and saving the results into .npy files
 - `result_analysis.py` - code used for reading .npy DLA arrays in  `results` folder and extracting network statistics from them
-- `analyse_cities.py` - code used for gathring network statistics for selected real-world cities.
+- `analyse_cities.py` - code used for gathering network statistics for selected real-world cities.
 
 ### Results
 
