@@ -1,4 +1,6 @@
 # Generating urban-like networks with DLA
+### Ignas Krikštaponis, Xiang Li, Sebastiaan Kruize, Youri Moll
+
 
 ![](figures/process.png)
 
@@ -12,7 +14,7 @@ To install all necessary packages, run:
 ## Modules
 - `dla_model_final.py` - functions for generating DLA arrays (including dynamic stickiness) and calculating fractal dimension
 - `networks.py` - functions for generating networks from DLA, retrieving real-life networks, converting city networks into fractals and performing analysis
-- `animate_grid.py` - function for generating animated gifs from DLA numpy arrays
+- `animate_grid.py` - a function for generating animated gifs from DLA numpy arrays
 - `fractal_city.py` - code for retrieving fractals from real-life city networks.
 
 ### Other
@@ -23,7 +25,7 @@ To install all necessary packages, run:
 
 ### Results
 
-Saved numpy arrays generated with experiments can be found in the `results` folder:
+Results generated with experiments can be found in the `results` folder:
 
 - `changing_stickness_250_walkers` DLA numpy arrays generated with `experiments.py` changing stickiness with 250 walkers. file format `x,y.npy`: x - stickiness, y - simulation number
 - `changing_stickness_400_walkers` DLA numpy arrays generated with `experiments.py` changing stickiness with 400 walkers. file format `x,y.npy`: x - stickiness, y - simulation number
