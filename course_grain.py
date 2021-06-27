@@ -11,7 +11,6 @@ def course_grain_convolution(grid, threshold=0):
 
 
 
-
 if __name__ == "__main__":
     grid = np.load("results/changing_walkers/250,48.npy")
     plt.matshow(grid)

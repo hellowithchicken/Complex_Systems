@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 import concurrent.futures
 import pylab as pl
-from scipy import signal
 
 def initialize_grid(size):
     """makes grid of chosen size"""
@@ -39,12 +38,12 @@ def check_adhere(x_pos, y_pos, grid):
     if x_pos - 1 >= 0:
         if grid[x_pos-1][y_pos] > 0:
             return True
-
+    
     return False
 
 def move(x_pos, y_pos, grid, time, n_walkers, radius):
     """moves the random walker, avoiding edges and the structure"""
-
+    
     while True:
         x_new, y_new = x_pos, y_pos
         movement = np.random.choice([0,1,2,3])
@@ -54,13 +53,13 @@ def move(x_pos, y_pos, grid, time, n_walkers, radius):
 
         elif movement == 1:
             x_new = x_pos - 1
-
+        
         elif movement == 2:
             y_new = y_pos + 1
-
+        
         else:
             y_new = y_pos - 1
-
+        
         # check if the new move doesn't hit a boundary or structure
         if (x_new < 0) or (x_new > len(grid) - 1):
             continue
@@ -93,8 +92,8 @@ def walker(grid, stick_prob, time, n_walkers, curr_farthest_dist):
 
         # check if the walker can adhere
         if (check_adhere(x_pos, y_pos, grid) == True) and (np.random.uniform() <= stick_prob):
-            grid[x_pos][y_pos] = time/n_walkers*0.8 + 0.2
-            #grid[x_pos][y_pos] = 1
+            #grid[x_pos][y_pos] = time/n_walkers*0.8 + 0.2
+            grid[x_pos][y_pos] = 1
             break
 
         # if didn't adhere, move random walker
@@ -104,7 +103,7 @@ def walker(grid, stick_prob, time, n_walkers, curr_farthest_dist):
     # update the farthest distance from center
     dist_from_center = np.sqrt((x_pos-0.5*len(grid))**2 + (y_pos-0.5*len(grid))**2)
     if dist_from_center > curr_farthest_dist:
-        farthest_distance = dist_from_center
+        farthest_distance = dist_from_center 
 
     else:
         farthest_distance = curr_farthest_dist
@@ -121,54 +120,13 @@ def DLA_init(gridsize, n_walkers, stick_prob):
     #     result = [executor.submit(walker, grid, stick_prob) for _ in range(n_walkers)]
     #     for i in concurrent.futures.as_completed(result):
     #         grid = i.result()
-
+    
     # set a maximum distance for spawning which gets updates with every walker
     farthest_distance = 5
     for i in tqdm(range(n_walkers)):
-
-        # change the sticking probability dynamically
-        stick_prob = stickiness_scaler(i, 'step_function', n_walkers)
-
         farthest_distance = walker(grid, stick_prob, i, n_walkers, farthest_distance)
 
     return grid
-
-def stickiness_scaler(time, scaling, n_walkers):
-    if scaling == 'sin':
-        return 0.5*np.sin(0.0012*(time-1250))+0.501
-    if scaling == 'exponential':
-        return np.exp(-0.002*time)+0.003
-    if scaling == 'linear':
-        return 1 - time/n_walkers + 0.001
-    if scaling == 'dampened_sin':
-        if time > 0.5*n_walkers:
-            return (0.5*np.sin(0.0012*(time-1250))+0.501)*(np.exp(-0.002*(time-2500))+0.003)
-        else:
-            return 0.5*np.sin(0.0012*(time-1250))+0.501
-
-    if scaling == 'waves':
-        cycles = 2
-        return 0.5*np.sin(cycles*((time+1875)*2*np.pi)/n_walkers)+0.501
-
-    if scaling == 'step_function':
-        periods = 5
-        #periods_time = [(n_walkers/periods)*i for i in range(periods+1)]
-        periods_time = [0] + list(np.logspace(0.8, 1, num=periods, base=n_walkers))
-
-        # stickiness switch
-        stickiness_switch=1
-        for t in range(len(periods_time)-1):
-            if (time>=periods_time[t]) and (time<periods_time[t+1]):
-                if stickiness_switch == 1:
-                    return 0.01
-                else:
-                    return 1
-            stickiness_switch *= -1
-            
-
-
-
-
 
 def fractal_dim(grid, Lx, Ly):
 
@@ -192,7 +150,7 @@ def fractal_dim(grid, Lx, Ly):
         for gridpoint in np.hstack(grid[x_start:x_end, y_start:y_end]):
             if gridpoint > 0:
                 point_counter += 1
-
+        
         square_counts.append(point_counter)
 
     log_x = [np.log(x*Lx) for x in lengths]
@@ -211,29 +169,27 @@ def get_fractal_dim(image_grid):
         r, g, b = rgb[:,:,0], rgb[:,:,1], rgb[:,:,2]
         gray = 0.2989 * r + 0.5870 * g + 0.1140 * b
         return gray
-
+ 
     image=rgb2gray(pl.imread(f"{image_grid}.png"))
-    plt.imshow(image)
-    plt.show()
-    # image = image_grid
+    # plt.imshow(image)
+    # plt.show()
 
     # finding all the non-zero pixels
     pixels=[]
     for i in range(image.shape[0]):
         for j in range(image.shape[1]):
             if image[i,j] == 0:
-            # if image[i,j] > 0:
                 pixels.append((i,j))
-
+    
     Lx=image.shape[1]
     Ly=image.shape[0]
     #print (Lx, Ly)
     pixels=pl.array(pixels)
     #print (pixels.shape)
-
+    
     # computing the fractal dimension
     #considering only scales in a logarithmic list
-    scales=np.logspace(0.01, 9, num=10, endpoint=False, base=2)
+    scales=np.logspace(0.01, 1, num=10, endpoint=False, base=2)
     Ns=[]
     # looping over several scales
     for scale in scales:
@@ -241,7 +197,7 @@ def get_fractal_dim(image_grid):
         # computing the histogram
         H, edges=np.histogramdd(pixels, bins=(np.arange(0,Lx,scale),np.arange(0,Ly,scale)))
         Ns.append(np.sum(H>0))
-
+    
     # linear fit, polynomial of degree 1
     coeffs, cov =np.polyfit(np.log(scales), np.log(Ns), 1, cov=True)
     print ("The fractal dimension is", -coeffs[0]) #the fractal dimension is the OPPOSITE of the fitting coefficient
@@ -275,22 +231,22 @@ if __name__ == '__main__':
     fractal_dimension_list_big = []
     fractal_dimension_std_list_big = []
     stickiness_list = np.linspace(0.1, 1, 10)
-    stickiness_list = [0.01]#, 0.02, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 1]
+    stickiness_list = [0.01, 0.02, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 1]
     for stickiness in stickiness_list:
         frac_list = []
         frac_list_big = []
 
         # for i in range(5):
-        grid = DLA_init(500, 10000, stickiness)
-        np.save('10k_2periods', grid)
+        grid = DLA_init(300, 500, stickiness)
+
         grid_reduced = grid[~np.all(grid == 0, axis=1)]
         grid_reduced = grid_reduced[:, ~np.all(grid == 0, axis=0)]
         #grid_reduced = grid
         Lx, Ly = grid_reduced.shape[1], grid_reduced.shape[0]
-        fig = plt.figure()
+        fig = plt.figure(figsize=(5,5))
         ax = fig.add_subplot()
-        cax = ax.matshow(grid_reduced, cmap='afmhot')
-        #cax = ax.matshow(grid_reduced, cmap='binary')
+        #cax = ax.matshow(grid_reduced, cmap='afmhot')
+        cax = ax.matshow(grid_reduced, cmap='binary')
         ax.set_xlabel('x')
         ax.set_ylabel('y')
         plt.axis('off')
@@ -300,22 +256,21 @@ if __name__ == '__main__':
         fig.subplots_adjust(right = 1)
         fig.subplots_adjust(left = 0)
         #plt.imshow(grid)
-        #plt.savefig(f'exponential_{stickiness}_colored.png', dpi=1000)
-        plt.savefig(f'10k_2periods.png', dpi=1000)
+        plt.savefig(f'test_{stickiness}.png')
         plt.close()
         
-    #     frac_dim, std = get_fractal_dim(f'test_{stickiness}')
-    #     fractal_dimension_list.append(frac_dim)
-    #     fractal_dimension_std_list.append(std)
+        frac_dim, std = get_fractal_dim(f'test_{stickiness}')
+        fractal_dimension_list.append(frac_dim)
+        fractal_dimension_std_list.append(std)
 
-    # fig = plt.figure()
-    # ax = fig.add_subplot(111)
-    # ax.plot(stickiness_list, fractal_dimension_list, label='N=400')
-    # ax.fill_between(stickiness_list, np.array(fractal_dimension_list) - np.array(fractal_dimension_std_list), np.array(fractal_dimension_list) + np.array(fractal_dimension_std_list), alpha=0.5)
-    # #ax.plot(stickiness_list, fractal_dimension_list_big, label='N=1000')
-    # #ax.fill_between(stickiness_list, np.array(fractal_dimension_list_big) - np.array(fractal_dimension_std_list_big), np.array(fractal_dimension_list_big) + np.array(fractal_dimension_std_list_big), alpha=0.5)
-    # ax.set_xlabel('Sticking probability')
-    # ax.set_ylabel('Fractal dimension')
-    # ax.set_title('Fractal dimension for different sticking probabilities')
-    # #plt.legend()
-    # plt.show()
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.plot(stickiness_list, fractal_dimension_list, label='N=400')
+    ax.fill_between(stickiness_list, np.array(fractal_dimension_list) - np.array(fractal_dimension_std_list), np.array(fractal_dimension_list) + np.array(fractal_dimension_std_list), alpha=0.5)
+    #ax.plot(stickiness_list, fractal_dimension_list_big, label='N=1000')
+    #ax.fill_between(stickiness_list, np.array(fractal_dimension_list_big) - np.array(fractal_dimension_std_list_big), np.array(fractal_dimension_list_big) + np.array(fractal_dimension_std_list_big), alpha=0.5)
+    ax.set_xlabel('Sticking probability')
+    ax.set_ylabel('Fractal dimension')
+    ax.set_title('Fractal dimension for different sticking probabilities and system sizes')
+    #plt.legend()
+    plt.show()
