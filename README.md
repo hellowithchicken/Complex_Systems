@@ -25,7 +25,7 @@ To install all necessary packages, run:
 
 ### Results
 
-Saved numpy arrays generated with experiments can be found in the `results` folder:
+Results generated with experiments can be found in the `results` folder:
 
 - `changing_stickness_250_walkers` DLA numpy arrays generated with `experiments.py` changing stickiness with 250 walkers. file format `x,y.npy`: x - stickiness, y - simulation number
 - `changing_stickness_400_walkers` DLA numpy arrays generated with `experiments.py` changing stickiness with 400 walkers. file format `x,y.npy`: x - stickiness, y - simulation number
