@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from dla_rand_new2 import get_fractal_dim
+from dla_model_final import get_fractal_dim
 from networks import get_city_network, get_fractal_from_network
 
 def network_frac_dim(city, country):

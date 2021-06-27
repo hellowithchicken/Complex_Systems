@@ -1,6 +1,0 @@
-Number of simulations = 50
-grid size = 100x100
-number of walkers = 400
-stick_list = [1, 0.9, 0.7, 0.5, 0.3, 0.2, 0.15, 0.1, 0.08, 0.05, 0.01, 0.005]
-
-Simulations were run with "sped-up" dla function.

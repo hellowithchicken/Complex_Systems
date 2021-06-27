@@ -1,5 +1,5 @@
 from networks import get_network, get_average_degree, get_entropy, get_dead_ends, get_4_way, get_average_distance
-from dla_rand import DLA_init, plot_grid
+from dla_model_final import DLA_init, plot_grid
 import networkx as nx
 import numpy as np
 import pandas as pd

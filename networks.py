@@ -4,7 +4,6 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-### CHECK betweenness_centrality LATER
 
 def check_for_neighbours(row, col, grid, direction):
   """
